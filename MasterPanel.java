@@ -1,8 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.HashMap;
 public class MasterPanel extends JPanel
 {
+   private static Color[] colorArr;
+   private static String[] stringArr;
+   private HashMap<Color, Integer> colorToIndex;
    private JButton[][] board;
    private Color[][] colors;
    private String[][] color;
@@ -16,7 +20,7 @@ public class MasterPanel extends JPanel
    private int currentRow;
    public MasterPanel()
    {
-      //Color[] dacolor = {Color.GREEN, Color.MAGENTA, Color.YELLOW, Color.RED, Color.BLUE, Color.CYAN};
+      initColors();
       setLayout(new BorderLayout());
       label = new JLabel("");
       label.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 12));
@@ -72,61 +76,26 @@ public class MasterPanel extends JPanel
          theanswer[x]=randomize();
       }
    }
+   public void initColors(){
+      colorArr = new Color[7];
+      stringArr = new String[7];
+      colorArr[0] = Color.GREEN; colorArr[1] = Color.MAGENTA; colorArr[2] = Color.YELLOW; colorArr[3] = Color.RED; colorArr[4] = Color.BLUE; colorArr[5] = Color.CYAN; colorArr[6] = Color.ORANGE;
+      stringArr[0] = "Green"; stringArr[1] = "Magenta"; stringArr[2] = "Yellow"; stringArr[3] = "Red"; stringArr[4] = "Blue"; stringArr[5] = "Cyan"; stringArr[6] = "Orange";
+      colorToIndex = new HashMap<Color, Integer>();
+      for(int i = 0; i<colorArr.length; i++)
+         colorToIndex.put(colorArr[i], i);
+   }
    public Color toggle(Color c)
    {
-      if(c.equals(Color.GREEN))
-      {
-         return Color.MAGENTA;
-      }
-      if(c.equals(Color.MAGENTA))
-      {
-         return Color.YELLOW;
-      }
-      if(c.equals(Color.YELLOW))
-      {
-         return Color.RED;
-      }
-      if(c.equals(Color.RED))
-      {
-         return Color.BLUE;
-      }
-      if(c.equals(Color.BLUE))
-      {
-         return Color.CYAN;
-      }
-      if(c.equals(Color.CYAN))
-      {
-         return Color.ORANGE;
-      }
-      return Color.GREEN;
+      if(c.equals(Color.GRAY))
+         return Color.GREEN;
+      int loc = (colorToIndex.get(c)+1)%colorArr.length;
+      return colorArr[loc];
    }
-   public String toggler(Color c)
+   public String stringify(Color c)
    {
-      if(c.equals(Color.GREEN))
-      {
-         return "Green";
-      }
-      if(c.equals(Color.MAGENTA))
-      {
-         return "Magenta";
-      }
-      if(c.equals(Color.YELLOW))
-      {
-         return "Yellow";
-      }
-      if(c.equals(Color.RED))
-      {
-         return "Red";
-      }
-      if(c.equals(Color.BLUE))
-      {
-         return "Blue";
-      }
-      if(c.equals(Color.CYAN))
-      {
-         return "Cyan";
-      }
-      return "Orange";
+      int loc = colorToIndex.get(c);
+      return stringArr[loc];
    }
    public void freeze()
    {
@@ -227,7 +196,7 @@ public class MasterPanel extends JPanel
             }
             else if(myX==6)
             {
-               label.setText("Loser! The correct combo was: " + toggler(theanswer[0]) + " " + toggler(theanswer[1]) + " " + toggler(theanswer[2]) + " " + toggler(theanswer[3]));
+               label.setText("Loser! The correct combo was: " + stringify(theanswer[0]) + " " + stringify(theanswer[1]) + " " + stringify(theanswer[2]) + " " + stringify(theanswer[3]));
                answer[myX].setEnabled(false);
                freeze();
                reset.setEnabled(true);
@@ -247,34 +216,7 @@ public class MasterPanel extends JPanel
    }
    public Color randomize()
    {
-      double rand = Math.random();
-      if(rand<1.0/7.0)
-      {
-         return Color.GREEN;
-      }
-      else if(rand<2.0/7.0)
-      {
-         return Color.MAGENTA;
-      }
-      else if(rand<3.0/7.0)
-      {
-         return Color.RED;
-      }
-      else if(rand<4.0/7.0)
-      {
-         return Color.YELLOW;
-      }
-      else if(rand<5.0/7.0)
-      {
-         return Color.BLUE;
-      }
-      else if(rand<6.0/7.0)
-      {
-         return Color.CYAN;
-      }
-      else
-      {
-         return Color.ORANGE;
-      }
+      int rand = (int)(Math.random()*7);
+      return colorArr[rand];
    }
 }
